@@ -1,12 +1,8 @@
-# draggable-example
+# Bitcoin Cash Privacy Game
 
-> Example usage of [vue.draggable](https://github.com/SortableJS/Vue.Draggable)
+A basic base of privacy where the user is challenged to pay the landlord without revealing that she has been playing playing with Satoshi Dice.
 
-![demo gif](example.gif)
-
-## Live demo
-
-https://david-desmaisons.github.io/draggable-example/
+https://m4ktub.github.io/bch-privacy-game/
 
 ## Build Setup
 
@@ -20,4 +16,3 @@ npm run serve
 # build for production with minification
 npm run build
 ```
-

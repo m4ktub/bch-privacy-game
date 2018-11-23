@@ -1,9 +1,9 @@
 {
-  "name": "draggable-example",
+  "name": "bch-privacy-game",
   "version": "0.1.0",
   "private": true,
-  "description": "A Vue.js project",
-  "author": "desmaisons_david <desmaisons_david@hotmail.com>",
+  "description": "A simple Bitcoin Cash game of privacy",
+  "author": "m4ktub",
   "license": "MIT",
   "scripts": {
     "serve": "vue-cli-service serve --open",
