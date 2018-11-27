@@ -11,7 +11,7 @@
         <div class="col-md-8">
           <p>With the inclusion of the <a href="https://cashshuffle.com">Cash Shuffle</a> plug-in in Electron Cash by default (soon &#8482;) an important privacy tool becomes easily available. If a similar integration is included in a popular mobile wallet (soonish &#128591;) then privacy in Bitcoin Cash will be greatly improved. Privacy within the crowds.</p>
           
-          <p>The following series of mine games intend to show how coins can be tracked and how hard or easy it is to get rid of that tracking. This should help understand how cash shuffle helps and how it compares with traditional mixers.</p>
+          <p>The following series of games intend to show how coins can be tracked and how hard or easy it is to get rid of that tracking. This should help understand how cash shuffle helps and how it compares with traditional mixers.</p>
           <button type="button" class="btn btn-warning" v-on:click="scrollToGame">Start</button>
         </div>
       </div>

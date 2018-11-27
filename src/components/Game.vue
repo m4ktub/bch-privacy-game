@@ -17,9 +17,9 @@
               <span id="wallet-help" class="help fas fa-info-circle float-right mt-1"></span>
               <span class="fas fa-coins badge badge-success float-right mt-1 mr-1"> {{ walletValue }}</span>
               
-              <b-popover target="wallet-help" triggers="hover focus" title="This is your wallet">
+              <b-popover show target="wallet-help" triggers="hover focus" title="This is your wallet">
                 <p>You wallet contains the coins you control. You can drag them to other wallets or select them and make actions.</p>
-                <p>Each coin can have markers. A marker represents tracking information that the landlord will be able to track. You don't want to pay with coins having the <span class="badge badge-danger">dice</span> marker.</p>
+                <p>Each coin can have markers. A marker represents tracking information that the landlord will be able to use. You don't want to pay with coins having the <span class="badge badge-danger">dice</span> marker.</p>
               </b-popover>
             </div>
             <div class="card-body">
