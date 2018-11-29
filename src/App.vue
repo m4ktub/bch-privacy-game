@@ -18,7 +18,35 @@
     </div>
     
 
-    <game></game>
+    <game id="game1" next="game2" showhelp 
+          v-bind:coins="[
+            { value: 2000, tag: 'rent' }
+          ]">
+      <template slot="title">Game 1 - Let there be coins!</template>
+      <template slot="finalMessage">
+        <p>Most wallets just show a balance but you're actually splitting and joining coins. Just by knowing that, and that each coin can be tracked individually, you can improve your privacy.</p>
+      </template>
+    </game>
+    <game id="game2" next="game3" showmixer showmixerhelp
+          v-bind:coins="[
+            { value: 510, tag: 'rent' }
+          ]">
+      <template slot="title">Game 2 - Into the mix</template>
+      <template slot="finalMessage">
+        <p>A mixer is convenient because it can provide an easy to use service that takes care of breaking all tracking between coins. Nevertheless you need to trust the service. A bad mixer can take your money or give you coins with a worse history than the ones you had.</p>
+      </template>
+    </game>
+    <game id="game3" showshuffle showshufflehelp
+          v-bind:coins="[
+            { value: 510, tag: 'rent' }
+          ]">
+      <template slot="title">Game 3 - Everybody Shuffling!</template>
+      <template slot="finalMessage">
+        <p>You have to perform several shuffles because the tracking information is not lost, just made weaker. And you also need to generate coins of the same exact value as others do which can be inconvenient.</p>
+        <p>Cash Shuffle requires more work if done manually. On the other hand, it can be done by wallets automatically during the night, is cheaper than mixers, and requires no trusted service.</p>
+        <a href="https://cashshuffle.com" target="_blank">Check Cash Shuffle!</a>
+      </template>
+    </game>
   </div>
 </template>
 
@@ -93,5 +121,6 @@ body {
 
 .game {
   height: 100%;
+  min-heigth: 400px;
 }
 </style>
