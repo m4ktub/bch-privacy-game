@@ -10,8 +10,8 @@
                 v-on:click="doRestart">
           <small class="fas fa-undo"></small> Restart
         </button>
-        <b-popover :show="showhelp" ref="poph1" :target="id + 'restartbutton'" triggers="blur" placement="right">
-          <i class="far fa-lightbulb"></i> You can use this button to reset the game. 
+        <b-popover :show="showhelpreset" ref="poph1" :target="id + 'restartbutton'" triggers="blur" placement="right">
+          <i class="far fa-lightbulb"></i> You can use this button to reset the game, if you're stuck. 
           <button type="button" class="btn btn-link btn-sm" @click="closePopover('poph1')">Ok</button>
         </b-popover>
       </div>
@@ -41,9 +41,9 @@
               <button :id="id + 'wdicebutton'" type="button" class="btn btn-danger btn-sm float-right" 
                       v-bind:disabled="isDiceDisabled"
                       v-on:click="playDice">(<small class="fas fa-coins"></small> 5) Dice</button>
-              <b-popover :show="showhelp" ref="poph2" :target="id + 'wdicebutton'" 
+              <b-popover :show="showhelpactions" ref="poph2" :target="id + 'wdicebutton'" 
                          triggers="blur" placement="right">
-                <i class="far fa-lightbulb"></i> These are the actions you can perform on the wallet. 
+                <i class="far fa-lightbulb"></i> These are the actions you can perform on the wallet. Playing Satoshi Dice has a cost of <small class="fas fa-coins"></small> 5 (but you win  <small class="fas fa-coins"></small> 10 <i class="far fa-grin-tongue"></i>).
                 <button type="button" class="btn btn-link btn-sm" 
                         @click="closePopover('poph2')">Ok</button>
               </b-popover>
@@ -67,8 +67,9 @@
                 </transition-group>
               </draggable>
               
-              <b-popover :show="showhelp" ref="poph3" :target="id + 'wc1'" triggers="blur" placement="right">
-                <i class="far fa-lightbulb"></i> You can drag each coin to a new wallet, when available.
+              <b-popover :show="showhelpdrag" ref="poph3" :target="id + 'wc1'" triggers="blur" placement="right">
+                <i class="far fa-lightbulb"></i> You can drag each coin to a new wallet on the right.
+                Try dragging a coin to the landlords wallet.
                 <button type="button" class="btn btn-link btn-sm"
                         @click="closePopover('poph3')">Ok</button>
               </b-popover>
@@ -110,6 +111,12 @@
                   Next Challenge
                 </button>
               </b-popover>
+              <b-popover :show="showhelppaymentrdy" ref="pophpayment"
+                         :target="id + '-payment-button'" triggers="blur">
+                 <i class="far fa-lightbulb"></i> When the value of the landlord's wallet is in the green, you can make the payment.
+                 <button type="button" class="btn btn-link btn-sm"
+                         @click="closePopover('pophpayment')">Ok</button>
+              </b-popover>
               <hr>
               <draggable element="span" v-model="landlord.coins" :move="onMove" :options="dragOptions">
                 <transition-group name="no" class="list-group" tag="ul">
@@ -138,11 +145,10 @@
               <span :id="id + '-mixer-help'" class="help fas fa-info-circle float-right mt-1"></span>
               <span :class="'fas fa-coins float-right mt-1 mr-1 badge ' + (mixerValue >= 5 ? (mixerValue >= 30 ? 'badge-success' : 'badge-warning') : 'badge-danger')"> {{ mixerValue }}</span>
               
-              <b-popover :target="id + '-mixer-help'" 
-                         :show="showmixerhelp"
+              <b-popover :target="id + '-mixer-help'"
                          triggers="hover focus"
                          title="The mixer's wallet">
-                <p>A mixer can take your coins an give you new ones with a different history.</p>
+                <p>A mixer can take your coins and give you new ones with a different history.</p>
                 <p>You need to trust the mixer. If it's a good mixer, the new coins will be clean. If it's a bad mixer then some of the coins you get may be tracked to other gambling activities.</p>
               </b-popover>
             </div>
@@ -155,7 +161,7 @@
                       v-on:click="doUntrustedMix">(<small class="fas fa-coins"></small> 5) Mix</button>
               <b-popover :show="showmixerhelp" ref="poph5" :target="id + 'mixergoodbutton'" 
                          triggers="blur" placement="left">
-                <i class="far fa-lightbulb"></i> You can use a trusted mixer for <small class="fas fa-coins"></small> 30 or a mixer with a 60% chance of giving you bad coins for <small class="fas fa-coins"></small> 5. 
+                <i class="far fa-lightbulb"></i> You can now use a trusted mixer for <small class="fas fa-coins"></small> 30 or a mixer with a 60% chance of giving you bad coins for <small class="fas fa-coins"></small> 5.
                 <button type="button" class="btn btn-link btn-sm" 
                         @click="closePopover('poph5')">Ok</button>
               </b-popover>
@@ -187,8 +193,7 @@
               <span :id="id + '-shuffle-help'" class="help fas fa-info-circle float-right mt-1"></span>
               <span :class="'fas fa-coins float-right mt-1 mr-1 badge ' + (shuffleValue > 0 ?  'badge-success': 'badge-danger')"> {{ shuffleValue }}</span>
               
-              <b-popover :target="id + '-shuffle-help'" 
-                         :show="showshufflehelp"
+              <b-popover :target="id + '-shuffle-help'"
                          triggers="hover focus"
                          title="The Shuffle">
                 <p>Cash Shuffle allows people to mix coins together without needing to know or trust each other.</p>
@@ -196,17 +201,27 @@
               </b-popover>
             </div>
             <div class="card-body">
-              <button :id="id + 'shuffle3button'" type="button" class="btn btn-success btn-sm mr-1"
+              <button v-if="!showshufflehelpauto" :id="id + 'shuffle3button'" type="button" class="btn btn-success btn-sm mr-1"
                       v-bind:disabled="isShuffle3Disabled"
                       v-on:click="doShuffle3">(<small class="fas fa-coins"></small> 1) <i class="far fa-user"></i> x 3</button>
-              <button :id="id + 'shuffle5button'" type="button" class="btn btn-success btn-sm mr-1"
+              <button v-if="!showshufflehelpauto" :id="id + 'shuffle5button'" type="button" class="btn btn-success btn-sm mr-1"
                       v-bind:disabled="isShuffle5Disabled"
                       v-on:click="doShuffle5">(<small class="fas fa-coins"></small> 2) <i class="far fa-user"></i> x 5</button>
+              <button v-if="showshufflehelpauto" :id="id + 'shuffleautobutton'" type="button" class="btn btn-success btn-sm btn-block mr-1"
+                      v-bind:disabled="isShuffleAutoDisabled"
+                      v-on:click="doShuffleAuto">(<small class="fas fa-coins"></small> 12) <i class="far fa-user"></i> Auto</button>
               <b-popover :show="showshufflehelp" ref="poph6" :target="id + 'shuffle3button'" 
                          triggers="blur" placement="left">
-                <i class="far fa-lightbulb"></i> You can do a shuffle between 3 people or 5 people. More means better privacy with a slightly higher fee.
+                <i class="far fa-lightbulb"></i> Instead of using an automation, you now have to do individual shuffles. You have to choose between shuffling with 3 or 5 people. More people means better privacy for a slightly higher fee.
                 <button type="button" class="btn btn-link btn-sm" 
                         @click="closePopover('poph6')">Ok</button>
+              </b-popover>
+              <b-popover :show="showshufflehelpauto" ref="pophhelpauto" 
+                         :target="id + 'shuffleautobutton'" 
+                         triggers="blur" placement="left">
+                <i class="far fa-lightbulb"></i> You can use automated shuffling to break down your coins in several standard outputs that loose part of the tracking.
+                <button type="button" class="btn btn-link btn-sm" 
+                        @click="closePopover('pophhelpauto')">Ok</button>
               </b-popover>
               <hr>
               <draggable element="span" v-model="shuffle.coins" :move="onMove" :options="dragOptions">
@@ -255,7 +270,7 @@ function tag(name, type, p) {
 }
 
 function makeCoins(propCoins) {
-  return propCoins.map(pc => coin(pc.value, [ 
+  return propCoins.map(pc => coin(pc.value, !pc.tag ? false : [ 
     tag(pc.tag, pc.tag == 'dice' ? 'danger' : 'secondary', 100) 
   ]));
 }
@@ -266,10 +281,16 @@ export default {
     id: String,
     next: String,
     showhelp: Boolean,
+    showhelpactions: Boolean,
+    showhelpreset: Boolean,
+    showhelppayment: Boolean,
+    showhelpdrag: Boolean,
+    showlandlord: Boolean,
     showmixer: Boolean,
     showmixerhelp: Boolean,
     showshuffle: Boolean,
     showshufflehelp: Boolean,
+    showshufflehelpauto: Boolean,
     coins: Array
   },
   components: {
@@ -282,8 +303,8 @@ export default {
         coins: makeCoins(this.coins)
       },
       landlord: {
+        show: this.showlandlord,
         initialValue: -500,
-        show: false,
         coins: []
       },
       mixer: {
@@ -351,17 +372,11 @@ export default {
         ];
       }));
     },
-    doJoin() {
-      var keep = this.wallet.coins.filter(c => !c.selected);
-      var join = this.wallet.coins.filter(c => c.selected);
-      
-      if (join.length == 0) {
-        return;
-      }
-      
-      var joinValue = join.reduce((acc, c) => acc + c.value, 0);
+    doJoinAux(join) {
+      var joinValue = join.reduce((acc, c) => acc + (c ? c.value : 0), 0);
       var joinTags = join.reduce((acc, c) => {
-        c.tags.forEach(tag => {
+        var tags = ((c || {}).tags || []);
+        tags.forEach(tag => {
           let accTag = acc[tag.name];
           if (accTag) {
             accTag.p = Math.max(accTag.p, tag.p);
@@ -373,7 +388,17 @@ export default {
         return acc;
       }, {});
       
-      keep.push(coin(joinValue, Object.values(joinTags)));
+      return coin(joinValue, Object.values(joinTags));
+    },
+    doJoin() {
+      var keep = this.wallet.coins.filter(c => !c.selected);
+      var join = this.wallet.coins.filter(c => c.selected);
+      
+      if (join.length == 0) {
+        return;
+      }
+      
+      keep.push(this.doJoinAux(join));
       this.wallet.coins = keep;
     },
     makePayment() {
@@ -390,16 +415,13 @@ export default {
       }
     },
     scrollToNextGame() {
-      var nextId = "#" + this.next;
-      var game = this.$el.parentNode.querySelector(nextId);
-      scrollTo(0, game.offsetTop);
-      location.hash = nextId;
+      this.$parent.showGame(this.next);
     },
     onMove({ relatedContext, draggedContext }) {
       return true;
     },
     closePopover(ref) {
-      this.$refs[ref].$emit('close')
+      this.$refs[ref].$emit('close');
     },
     doMix(cost, mixTag) {
       var unselected = this.mixer.coins.filter(c => !c.selected);
@@ -427,18 +449,9 @@ export default {
       }
       this.doMix(5, tag);
     },
-    doShuffle(cost, factor) {
-      var unselected = this.shuffle.coins.filter(c => !c.selected);
-      var shuffle = this.shuffle.coins.filter(c => c.selected);
-      
-      if (shuffle.length == 0) {
-        shuffle = unselected;
-        unselected = [];
-      }
-      
-      var shuffleCoin = shuffle[0];
+    doShuffle(shuffleCoin, cost, factor) {
       var coinValue = shuffleCoin.value - cost;
-      
+          
       var finalValue;
       if (coinValue >= 100) {
         finalValue = 100 * Math.floor(coinValue / 100);
@@ -456,29 +469,74 @@ export default {
       });
       finalTags = finalTags.filter(t => t.p > MIN_P);
       
-      if (changeValue > 0) {
-        this.wallet.coins.push(coin(changeValue, changeTags));
+      return {
+        shuffled: coin(finalValue, finalTags),
+        change: changeValue == 0
+          ? undefined
+          : coin(changeValue, changeTags)
+      };
+    },
+    doShuffleAux(shufflef) {
+      var unselected = this.shuffle.coins.filter(c => !c.selected);
+      var shuffle = this.shuffle.coins.filter(c => c.selected);
+      
+      if (shuffle.length == 0) {
+        shuffle = unselected;
+        unselected = [];
       }
       
-      this.wallet.coins.push(coin(finalValue, finalTags));
       this.shuffle.coins = unselected;
+      for (var i = 0; i < shuffle.length; i++) {
+          var result = shufflef(shuffle[i]);
+          
+          var shuffledArray = Array.isArray(result.shuffled) 
+            ? result.shuffled 
+            : [ result.shuffled ];
+          
+          shuffledArray.forEach(c => {
+            this.shuffle.coins.push(c);
+          });
+          if (result.change) {
+            this.wallet.coins.push(result.change);
+          }
+      }
     },
     doShuffle3() {
-      this.doShuffle(1, 3);
+      this.doShuffleAux(c => this.doShuffle(c, 1, 3));
     },
     doShuffle5() {
-      this.doShuffle(2, 5);
+      this.doShuffleAux(c => this.doShuffle(c, 2, 5));
+    },
+    doShuffleAuto() {
+      this.doShuffleAux(c => {
+        var result1 = this.doShuffle(c, 2, 5);
+        var result2 = this.doShuffle(result1.shuffled, 2, 5);
+        var change1 = this.doJoinAux([ result1.change, result2.change ]);
+        var result3 = this.doShuffle(change1, 2, 5);
+        var result4 = this.doShuffle(result3.shuffled, 2, 5);
+        var change2 = this.doJoinAux([ result3.change, result4.change ]);
+        var result5 = this.doShuffle(change2, 2, 5);
+        var result6 = this.doShuffle(result5.shuffled, 2, 5);
+        var change3 = this.doJoinAux([ result5.change, result6.change ]);
+        
+        return {
+          shuffled: [ result2.shuffled, result4.shuffled, result6.shuffled],
+          change: change3
+        };
+      });
     },
     isShuffleDisabled(cost) {
       var selected = this.shuffle.coins.filter(c => c.selected);
       if (selected.length == 0) {
         selected = this.shuffle.coins;
       }
-      var amount = selected.reduce((acc, c) => acc + c.value, 0);
-      return amount <= cost;
+      return selected.length == 0 || selected.some(c => c.value <= cost);
     }
   },
   computed: {
+    showhelppaymentrdy() {
+      return this.showhelppayment && this.landlordValue >= 0;
+    },
     walletValue() {
       var sum = this.wallet.coins.reduce((acc, c) => acc + c.value, 0);
       return sum + this.wallet.initialValue;
@@ -534,6 +592,9 @@ export default {
     },
     isShuffle5Disabled() {
       return this.isShuffleDisabled(2);
+    },
+    isShuffleAutoDisabled() {
+      return this.isShuffleDisabled(12);
     }
   },
   watch: {
