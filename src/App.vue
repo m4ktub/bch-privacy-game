@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <div id="game0" class="container" v-show="showIntro">
+    <div id="game0" class="container" v-show="showintro">
       <div class="page-header">
         <h1>Bitcoin Cash Privacy Game</h1>
       </div>
@@ -17,7 +17,7 @@
       </div>
     </div>
     
-    <game id="game1" v-show="showgame1" next="game2" showhelpdrag showhelppayment showlandlord
+    <game id="game1" ref="game1" v-show="showgame1" next="game2" showhelppayment showlandlord
           v-bind:coins="[
             { value: 500, tag: 'rent' },
             { value: 500 }
@@ -27,7 +27,7 @@
         <p>Most wallets just show a balance but you're actually working with individual coins underneath. If you know about coins, and that each coin can be tracked individually, you can improve your privacy.</p>
       </template>
     </game>
-    <game id="game2" v-show="showgame2" next="game3" showhelpactions showhelpreset
+    <game id="game2" ref="game2" v-show="showgame2" next="game3" 
           v-bind:coins="[
             { value: 200, tag: 'rent' },
             { value: 200, tag: 'rent' },
@@ -38,7 +38,7 @@
         <p>Splitting and joining coins is the most basic thing you can do to limit how other people track your money. If you join all coins, for a single payment, then you show everyone they are all yours.</p>
       </template>
     </game>
-    <game id="game3" v-show="showgame3" next="game4" showmixer showmixerhelp
+    <game id="game3" ref="game3" v-show="showgame3" next="game4" showmixer
           v-bind:coins="[
             { value: 500, tag: 'rent' }
           ]">
@@ -47,7 +47,7 @@
         <p>A mixer is convenient because it can provide an easy to use service that takes care of breaking all tracking between coins. Nevertheless you need to trust the service. A bad mixer can take your money or give you coins with a worse history than the ones you had.</p>
       </template>
     </game>
-    <game id="game4" v-show="showgame4" next="game5" showshuffle showshufflehelpauto
+    <game id="game4" ref="game4" v-show="showgame4" next="game5" showshuffle
           v-bind:coins="[
             { value: 500, tag: 'rent' }
           ]">
@@ -59,7 +59,7 @@
         </p>
       </template>
     </game>
-    <game id="game5" v-show="showgame5" showshuffle showshufflehelp
+    <game id="game5" ref="game5" v-show="showgame5" showshuffle 
           v-bind:coins="[
             { value: 500, tag: 'rent' }
           ]">
@@ -85,7 +85,7 @@ export default {
   },
   data() {
     return {
-      showIntro: true,
+      showintro: true,
       showgame1: false,
       showgame2: false,
       showgame3: false,
@@ -96,25 +96,49 @@ export default {
   mounted() {
     if (location.hash.startsWith("#game")) {
         this.showGame(location.hash.substring(1));
-        this.showIntro = false;
+        this.showintro = false;
     }
   },
   methods: {
-    scrollToGame: function() {
-      //var game = this.$el.querySelector("#game1");
-      //scrollTo(0, game.offsetTop);
-      location.hash = "#game1";
-      this.showIntro = false;
-    },
     showGame(gameId) {
-        location.hash = "#" + gameId;
-        this["showgame1"] = false;
-        this["showgame2"] = false;
-        this["showgame3"] = false;
-        this["showgame4"] = false;
-        this["showgame5"] = false;
-        this["show" + gameId] = true;
-        this.showIntro = false;
+      location.hash = "#" + gameId;
+      
+      this["showgame1"] = false;
+      this["showgame2"] = false;
+      this["showgame3"] = false;
+      this["showgame4"] = false;
+      this["showgame5"] = false;
+      this["show" + gameId] = true;
+      this.showintro = false;
+      
+      var enableBooleanProps = (props) => {
+        var c = this.$refs[gameId];
+        for (var i = 0; i < props.length; i++) {
+          c[props[i]] = true;
+        }
+      };
+      
+      this.$nextTick(() => {
+        if (gameId == "game1") {
+          enableBooleanProps(["showhelpdrag"]);
+        }
+        
+        if (gameId == "game2") {
+          enableBooleanProps(["showhelpactions", "showhelpreset"]);
+        }
+        
+        if (gameId == "game3") {
+          enableBooleanProps(["showmixerhelp"]);
+        }
+        
+        if (gameId == "game4") {
+          enableBooleanProps(["showshufflehelpauto"]);
+        }
+        
+        if (gameId == "game5") {
+          enableBooleanProps(["showshufflehelp"]);
+        }
+      });
     }
   }
 };

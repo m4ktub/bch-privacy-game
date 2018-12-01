@@ -10,9 +10,10 @@
                 v-on:click="doRestart">
           <small class="fas fa-undo"></small> Restart
         </button>
-        <b-popover :show="showhelpreset" ref="poph1" :target="id + 'restartbutton'" triggers="blur" placement="right">
+        <b-popover :show="showhelpreset" ref="showhelpreset" :target="id + 'restartbutton'" triggers="blur" placement="right">
           <i class="far fa-lightbulb"></i> You can use this button to reset the game, if you're stuck. 
-          <button type="button" class="btn btn-link btn-sm" @click="closePopover('poph1')">Ok</button>
+          <button type="button" class="btn btn-link btn-sm" 
+                  @click="closePopover('showhelpreset')">Ok</button>
         </b-popover>
       </div>
       <hr>
@@ -201,13 +202,13 @@
               </b-popover>
             </div>
             <div class="card-body">
-              <button v-if="!showshufflehelpauto" :id="id + 'shuffle3button'" type="button" class="btn btn-success btn-sm mr-1"
+              <button v-show="!showshufflehelpauto" :id="id + 'shuffle3button'" type="button" class="btn btn-success btn-sm mr-1"
                       v-bind:disabled="isShuffle3Disabled"
                       v-on:click="doShuffle3">(<small class="fas fa-coins"></small> 1) <i class="far fa-user"></i> x 3</button>
-              <button v-if="!showshufflehelpauto" :id="id + 'shuffle5button'" type="button" class="btn btn-success btn-sm mr-1"
+              <button v-show="!showshufflehelpauto" :id="id + 'shuffle5button'" type="button" class="btn btn-success btn-sm mr-1"
                       v-bind:disabled="isShuffle5Disabled"
                       v-on:click="doShuffle5">(<small class="fas fa-coins"></small> 2) <i class="far fa-user"></i> x 5</button>
-              <button v-if="showshufflehelpauto" :id="id + 'shuffleautobutton'" type="button" class="btn btn-success btn-sm btn-block mr-1"
+              <button v-show="showshufflehelpauto" :id="id + 'shuffleautobutton'" type="button" class="btn btn-success btn-sm btn-block mr-1"
                       v-bind:disabled="isShuffleAutoDisabled"
                       v-on:click="doShuffleAuto">(<small class="fas fa-coins"></small> 12) <i class="far fa-user"></i> Auto</button>
               <b-popover :show="showshufflehelp" ref="poph6" :target="id + 'shuffle3button'" 
@@ -217,8 +218,7 @@
                         @click="closePopover('poph6')">Ok</button>
               </b-popover>
               <b-popover :show="showshufflehelpauto" ref="pophhelpauto" 
-                         :target="id + 'shuffleautobutton'" 
-                         triggers="blur" placement="left">
+                         :target="id + 'shuffleautobutton'" triggers="blur" placement="left">
                 <i class="far fa-lightbulb"></i> You can use automated shuffling to break down your coins in several standard outputs that loose part of the tracking.
                 <button type="button" class="btn btn-link btn-sm" 
                         @click="closePopover('pophhelpauto')">Ok</button>
@@ -327,7 +327,7 @@ export default {
   },
   methods: {
     doRestart() {
-        Object.assign(this.$data, this.$options.data.call(this));
+      Object.assign(this.$data, this.$options.data.call(this));
     },
     playDice() {
       this.landlord.show = true;
